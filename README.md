@@ -6,7 +6,7 @@ DumbPairVerse is a small, beginner-friendly website that brings together 24 char
 
 Open `index.html` in a browser. No installation or build step is needed.
 
-Every character has their own Showdown and Hangout beats, so each pairing's scene reflects both characters' abilities and habits. Nonverbal characters communicate through chirps, beeps, or gestures; the Demogorgon growls rather than speaking. Choose **Surprise me** to switch scenes. Character pictures are included in the `pics` folder and load locally; original illustrated portraits are used if a local image cannot be displayed. Wiki buttons link to more information.
+Each of the 60 same-genre duos has its own Showdown and Hangout scene, with pair-specific dialogue, settings, and character dynamics. Nonverbal characters communicate through chirps, beeps, or gestures; the Demogorgon growls rather than speaking. Choose **Surprise me** to switch scenes. Character pictures are included in the `pics` folder and load locally; original illustrated portraits are used if a local image cannot be displayed. Wiki buttons link to more information.
 
 ## Publish with GitHub Pages
 
