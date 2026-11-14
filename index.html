@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111216">
+    <meta name="description" content="Mix heroes, villains, and legends from every universe. Who will meet next?">
+    <title>DumbPairVerse — worlds collide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="DumbPairVerse home">
+          <span class="brand-mark" aria-hidden="true"><span></span><span></span></span>
+          <span><span class="brand-prefix">dumb</span><span class="brand-pair">pair</span><span class="brand-accent">verse</span></span>
+        </a>
+        <a class="top-link" href="#how-it-works">HOW IT WORKS <span aria-hidden="true">↗</span></a>
+      </header>
+
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <div class="eyebrow"><span class="live-dot" aria-hidden="true"></span> THE MULTIVERSE IS A BIG PLACE</div>
+          <h1 id="page-title">Two worlds.<br><span>One unexpected</span> moment.</h1>
+          <p class="intro-copy">Heroes, villains, and legends from your favorite stories. What happens when their paths cross?</p>
+        </section>
+
+        <section class="controls" aria-label="Choose characters and a scene">
+          <div class="control-group">
+            <span class="control-label" id="world-label">CHOOSE A GENRE</span>
+            <div class="filter-list" role="group" aria-labelledby="world-label">
+              <button class="filter-chip is-selected" type="button" data-filter="fantasy" aria-pressed="true">🪄 Fantasy</button>
+              <button class="filter-chip" type="button" data-filter="comics" aria-pressed="false">💥 Comics</button>
+              <button class="filter-chip" type="button" data-filter="scifi" aria-pressed="false">🚀 Sci-fi</button>
+              <button class="filter-chip" type="button" data-filter="games" aria-pressed="false">🎮 Games</button>
+            </div>
+          </div>
+          <div class="control-group scene-group">
+            <span class="control-label" id="scene-label">SET THE SCENE</span>
+            <div class="scene-list" role="group" aria-labelledby="scene-label">
+              <button class="scene-chip is-selected" type="button" data-scene="surprise" aria-pressed="true">🎲 Surprise me</button>
+              <button class="scene-chip" type="button" data-scene="battle" aria-pressed="false">⚔️ Showdown</button>
+              <button class="scene-chip" type="button" data-scene="hangout" aria-pressed="false">☕ Hangout</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="duo-area" aria-label="Your character pairing">
+          <div class="scene-heading">
+            <span class="scene-kicker" id="scene-kicker">TODAY'S CROSSOVER</span>
+            <span class="round-count" id="round-count">PAIRING 01</span>
+          </div>
+          <div class="artwork-frame">
+            <img class="crossover-artwork" id="crossover-artwork" alt="An original illustrated crossover scene">
+            <img class="scene-character-photo scene-character-one" id="scene-photo-one" alt="" hidden>
+            <img class="scene-character-photo scene-character-two" id="scene-photo-two" alt="" hidden>
+            <span class="artwork-badge"><span aria-hidden="true">✦</span> REAL CHARACTER CROSSOVER</span>
+          </div>
+          <div class="duo-grid" id="duo-grid" aria-live="polite" aria-atomic="true">
+            <article class="character-card card-one" id="card-one">
+              <div class="card-topline"><span class="universe-tag" id="universe-one"></span><span class="card-index">01</span></div>
+              <div class="portrait" id="portrait-one"><img class="portrait-photo" id="portrait-photo-one" alt="" hidden><span class="portrait-emoji" id="emoji-one" aria-hidden="true"></span><span class="portrait-orbit" aria-hidden="true"></span></div>
+              <div class="character-info"><span class="character-role" id="role-one"></span><h2 id="name-one"></h2><a class="wiki-link" id="wiki-one" href="#" target="_blank" rel="noopener noreferrer">Explore their universe <span aria-hidden="true">↗</span></a></div>
+            </article>
+            <div class="collision" aria-hidden="true"><span class="collision-line"></span><span class="collision-icon">✳</span><span class="collision-line"></span></div>
+            <article class="character-card card-two" id="card-two">
+              <div class="card-topline"><span class="universe-tag" id="universe-two"></span><span class="card-index">02</span></div>
+              <div class="portrait" id="portrait-two"><img class="portrait-photo" id="portrait-photo-two" alt="" hidden><span class="portrait-emoji" id="emoji-two" aria-hidden="true"></span><span class="portrait-orbit" aria-hidden="true"></span></div>
+              <div class="character-info"><span class="character-role" id="role-two"></span><h2 id="name-two"></h2><a class="wiki-link" id="wiki-two" href="#" target="_blank" rel="noopener noreferrer">Explore their universe <span aria-hidden="true">↗</span></a></div>
+            </article>
+          </div>
+          <div class="story-strip" id="story-strip" aria-live="polite" aria-atomic="true">
+            <span class="story-icon" id="story-icon" aria-hidden="true">✦</span>
+            <div class="story-copy">
+              <span class="story-type" id="story-type">A LITTLE CROSSOVER STORY</span>
+              <p id="story-text">Pick a scene to see what these two get up to.</p>
+              <div class="story-lines" id="story-lines"></div>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="generate-button" id="generate-button" type="button"><span class="button-spark" aria-hidden="true">✦</span><span>Make another crossover</span><span class="button-arrow" aria-hidden="true">↗</span></button>
+            <button class="save-button" id="save-button" type="button" aria-pressed="false"><span aria-hidden="true">♡</span> <span id="save-label">Save this duo</span></button>
+          </div>
+          <p class="image-note" id="image-note" role="status">Real character images load from their story wikis. If a wiki has no portrait, an illustrated avatar appears instead.</p>
+        </section>
+
+        <section class="saved-section" id="saved-section" hidden aria-labelledby="saved-title">
+          <div class="saved-heading"><h2 id="saved-title">Your saved crossovers</h2><span id="saved-count">0 saved</span></div>
+          <div class="saved-list" id="saved-list"></div>
+        </section>
+
+        <section class="how-section" id="how-it-works">
+          <div class="how-number">01 — A LITTLE MULTIVERSE MAGIC</div>
+          <div class="how-content"><h2>Familiar faces.<br><span>Very unfamiliar plans.</span></h2><p>Choose a vibe or leave it to fate. We’ll find two characters from books, films, TV, comics, and games, then imagine the moment their stories collide. Read more about them with the wiki links.</p></div>
+          <div class="how-stamp" aria-hidden="true">NO<br>PORTAL<br>PERMIT<br>NEEDED <span>✳</span></div>
+        </section>
+      </main>
+
+      <footer class="footer"><a class="brand footer-brand" href="#"><span class="brand-mark" aria-hidden="true"><span></span><span></span></span><span><span class="brand-prefix">dumb</span><span class="brand-pair">pair</span><span class="brand-accent">verse</span></span></a><span>Made for curious minds &amp; crossover dreamers.</span><a href="#page-title">BACK TO TOP ↑</a></footer>
+    </div>
+  </body>
+</html>
