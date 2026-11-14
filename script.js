@@ -36,7 +36,7 @@ const characterCatalog = [
   { name: "Shrek", world: "Far Far Away", role: "Ogre with layers", emoji: "🧅", category: ["fantasy"], title: "Shrek", wiki: "https://shrek.fandom.com/wiki/Shrek_(character)" },
   { name: "Darth Vader", world: "Star Wars", role: "Sith Lord & dad", emoji: "🌑", category: ["scifi"], title: "Darth Vader", wiki: "https://starwars.fandom.com/wiki/Anakin_Skywalker" },
   { name: "Luke Skywalker", world: "Star Wars", role: "Farm kid turned Jedi", emoji: "✨", category: ["scifi"], title: "Luke Skywalker", wiki: "https://starwars.fandom.com/wiki/Luke_Skywalker" },
-  { name: "Neo", world: "The Matrix", role: "The One who bends the rules of reality", emoji: "🕶️", category: ["scifi"], title: "Neo (The Matrix)", wiki: "https://en.wikipedia.org/wiki/Neo_(The_Matrix)" },
+  { name: "Neo", world: "The Matrix", role: "The One who bends the rules of reality", emoji: "🕶️", category: ["scifi"], title: "Neo (The Matrix)", wiki: "https://en.wikipedia.org/wiki/Neo_(The_Matrix)", imageUrl: "https://upload.wikimedia.org/wikipedia/en/c/c6/NeoTheMatrix.jpg" },
   { name: "Grogu", world: "Star Wars", role: "Tiny Jedi, huge appetite", emoji: "👽", category: ["scifi"], title: "Grogu", wiki: "https://starwars.fandom.com/wiki/Grogu" },
   { name: "Din Djarin", world: "Star Wars", role: "A dad with a beskar helmet", emoji: "🛡️", category: ["scifi"], title: "Din Djarin", wiki: "https://starwars.fandom.com/wiki/Din_Djarin" },
   { name: "Yoda", world: "Star Wars", role: "Small size, big wisdom", emoji: "🧘", category: ["scifi"], title: "Yoda", wiki: "https://starwars.fandom.com/wiki/Yoda" },
@@ -55,7 +55,7 @@ const characterCatalog = [
   { name: "Pac-Man", world: "Pac-Man", role: "Professional snack enthusiast", emoji: "🟡", category: ["games"], title: "Pac-Man", wiki: "https://pacman.fandom.com/wiki/Pac-Man" },
   { name: "Ellie", world: "The Last of Us", role: "Survivor with a sharp wit", emoji: "🍃", category: ["games"], title: "Ellie (The Last of Us)", wiki: "https://thelastofus.fandom.com/wiki/Ellie_Williams" },
   { name: "Joel Miller", world: "The Last of Us", role: "A hardened survivor and smuggler", emoji: "🧭", category: ["games"], title: "Joel Miller", wiki: "https://thelastofus.fandom.com/wiki/Joel_Miller" },
-  { name: "The Dark Urge", world: "Baldur's Gate 3", role: "A Bhaalspawn resisting a murderous urge", emoji: "🗡️", category: ["games"], title: "The Dark Urge", wiki: "https://bg3.wiki/wiki/The_Dark_Urge", imageUrl: "https://bg3.wiki/w/images/b/b9/Dark_Urge_Headshot.webp" },
+  { name: "The Dark Urge", world: "Baldur's Gate 3", role: "A Bhaalspawn resisting a murderous urge", emoji: "🗡️", category: ["games"], title: "The Dark Urge", wiki: "https://bg3.wiki/wiki/The_Dark_Urge" },
   { name: "Aloy", world: "Horizon", role: "Machine-hunting trailblazer", emoji: "🏹", category: ["games", "scifi"], title: "Aloy", wiki: "https://horizon.fandom.com/wiki/Aloy" },
   { name: "Arthur Morgan", world: "Red Dead Redemption", role: "Outlaw with a complicated heart", emoji: "🤠", category: ["games"], title: "Arthur Morgan", wiki: "https://reddead.fandom.com/wiki/Arthur_Morgan" },
   { name: "Cortana", world: "Halo", role: "The galaxy's cleverest AI", emoji: "💠", category: ["games", "scifi"], title: "Cortana", wiki: "https://halo.fandom.com/wiki/Cortana" },
@@ -687,86 +687,93 @@ function renderCrossoverArtwork(first, second, scene) {
   artwork.alt = `${first.name} and ${second.name} ${isBattle ? "in a playful crossover showdown" : "sharing a crossover hangout"} — an original illustration made by the website.`;
 }
 
-async function getCharacterPhoto(character) {
-  if (character.imageUrl) return character.imageUrl;
-  const wikiUrl = new URL(character.wiki);
-  const articleTitle = decodeURIComponent(wikiUrl.pathname.split("/").pop()).replaceAll("_", " ");
-  const search = new URLSearchParams({
-    action: "query",
-    format: "json",
-    origin: "*",
-    prop: "pageimages",
-    piprop: "thumbnail",
-    pithumbsize: "640",
-    redirects: "1",
-    titles: articleTitle
-  });
-  const apiPath = ["bg3.wiki", "bulbapedia.bulbagarden.net"].includes(wikiUrl.hostname) ? "/w/api.php" : "/api.php";
-  const apiUrl = new URL(apiPath, wikiUrl.origin);
-  apiUrl.search = search;
-  const response = await fetch(apiUrl);
-  if (!response.ok) throw new Error(`The character wiki returned ${response.status}`);
-  const data = await response.json();
-  const page = Object.values(data.query?.pages || {})[0];
-  return page?.thumbnail?.source || null;
+function createCharacterPortrait(character) {
+  const palettes = {
+    fantasy: ["#332456", "#d4ff70", "#a68cff"],
+    comics: ["#501d38", "#ffcb70", "#ff7890"],
+    scifi: ["#153a4a", "#75e9d8", "#9aa9ff"],
+    games: ["#4a2d20", "#ffce72", "#a9e77d"]
+  };
+  const [backgroundColor, accentColor, secondaryColor] = palettes[character.category[0]];
+  const name = escapeSvg(character.name);
+  const emoji = escapeSvg(character.emoji);
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500" role="img">
+    <defs>
+      <linearGradient id="portrait-bg" x1="0" x2="1" y1="0" y2="1"><stop stop-color="${backgroundColor}"/><stop offset="1" stop-color="#15161d"/></linearGradient>
+      <radialGradient id="portrait-glow"><stop stop-color="${accentColor}" stop-opacity=".36"/><stop offset="1" stop-color="${accentColor}" stop-opacity="0"/></radialGradient>
+    </defs>
+    <rect width="500" height="500" fill="url(#portrait-bg)"/>
+    <circle cx="250" cy="248" r="205" fill="url(#portrait-glow)"/>
+    <circle cx="250" cy="248" r="173" fill="none" stroke="${accentColor}" stroke-opacity=".72" stroke-width="2"/>
+    <circle cx="250" cy="248" r="145" fill="none" stroke="${secondaryColor}" stroke-opacity=".5" stroke-width="1.5" stroke-dasharray="3 12"/>
+    <path d="M75 366 142 300m216-216 67-67M86 119l61 20m206 222 61 20" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="3" stroke-linecap="round"/>
+    <path d="m250 63 8 24 25-8-16 20 21 15-26-2-2 26-11-24-24 11 15-22-21-15 26 3z" fill="${accentColor}" fill-opacity=".72"/>
+    <text x="250" y="286" text-anchor="middle" dominant-baseline="middle" font-family="Arial,sans-serif" font-size="154">${emoji}</text>
+    <rect x="36" y="420" width="428" height="46" rx="23" fill="#111216" fill-opacity=".78" stroke="${accentColor}" stroke-opacity=".7"/>
+    <text x="250" y="449" text-anchor="middle" fill="#fff" font-family="Arial,sans-serif" font-size="17" font-weight="700" letter-spacing="1">${name}</text>
+  </svg>`;
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
 
-async function loadCharacterPhotos(pair) {
-  const photoRequest = ++state.photoRequest;
-  document.querySelector("#image-note").textContent = "Finding real character pictures on their story wikis…";
-  const photos = await Promise.all(pair.map(async (character) => {
-    try {
-      if (!characterPhotoCache.has(character.wiki)) {
-        characterPhotoCache.set(character.wiki, await getCharacterPhoto(character));
-      }
-      return characterPhotoCache.get(character.wiki);
-    } catch (error) {
-      console.error(`Could not load a wiki picture for ${character.name}.`, error);
-      return null;
-    }
-  }));
-  if (photoRequest !== state.photoRequest) return;
+const characterImageFiles = {
+  "Harry Potter": "harry potter.png",
+  "Momo (Avatar)": "momo.webp",
+  "Jon Snow": "jon snow.jpeg",
+  Gandalf: "gandalf.jpg",
+  "Percy Jackson": "percy.jpeg",
+  "Geralt of Rivia": "geralt.jpeg",
+  "Spider-Man": "spiderman.jpeg",
+  "Iron Man": "ironman.jpeg",
+  Thor: "thor.jpeg",
+  Loki: "loki.jpeg",
+  Batman: "batman.jpeg",
+  Deadpool: "deadpool.jpeg",
+  "Darth Vader": "darth vader.jpeg",
+  Neo: "neo.jpeg",
+  Yoda: "yoda.jpeg",
+  Spock: "spock.jpeg",
+  "Wall-E": "wall e.jpeg",
+  Demogorgon: "demigorgon.jpeg",
+  "Trevor Philips": "trevor.jpeg",
+  Link: "link.jpeg",
+  Mario: "mario.jpeg",
+  "Joel Miller": "joel.jpeg",
+  "The Dark Urge": "dark urge.jpeg",
+  Kratos: "kratos.jpeg"
+};
 
-  let missingPhoto = false;
-  photos.forEach((source, index) => {
-    if (!source) {
-      missingPhoto = true;
-      return;
-    }
-    const character = pair[index];
+function loadCharacterPhotos(pair) {
+  const photoRequest = ++state.photoRequest;
+  document.querySelector("#image-note").textContent = "Character pictures are included with the site; no external image servers are needed.";
+  pair.forEach((character, index) => {
     const portrait = elements.portraits[index];
     const portraitPhoto = elements.portraitPhotos[index];
     const scenePhoto = elements.scenePhotos[index];
+    const fallback = createCharacterPortrait(character);
+    const source = `pics/${encodeURIComponent(characterImageFiles[character.name])}`;
     portraitPhoto.alt = `${character.name} character picture`;
     scenePhoto.alt = `${character.name} in the crossover scene`;
+    portraitPhoto.classList.remove("has-image");
     portraitPhoto.onload = () => {
       if (photoRequest === state.photoRequest) portrait.classList.add("has-image");
     };
     portraitPhoto.onerror = () => {
       if (photoRequest !== state.photoRequest) return;
-      portraitPhoto.hidden = true;
-      portrait.classList.remove("has-image");
-      document.querySelector("#image-note").textContent = "One of the character pictures could not load; an illustrated avatar is shown instead.";
-      console.error(`The wiki picture for ${character.name} could not be displayed.`);
+      portraitPhoto.onerror = null;
+      portraitPhoto.src = fallback;
+      console.error(`The local picture for ${character.name} could not be displayed; using the original illustration.`);
     };
     scenePhoto.onerror = () => {
       if (photoRequest !== state.photoRequest) return;
-      scenePhoto.hidden = true;
-      document.querySelector("#image-note").textContent = "One of the character pictures could not load; an illustrated avatar is shown instead.";
-      console.error(`The scene picture for ${character.name} could not be displayed.`);
+      scenePhoto.onerror = null;
+      scenePhoto.src = fallback;
+      console.error(`The local scene picture for ${character.name} could not be displayed; using the original illustration.`);
     };
     portraitPhoto.src = source;
     scenePhoto.src = source;
     portraitPhoto.hidden = false;
     scenePhoto.hidden = false;
-    if (portraitPhoto.complete && portraitPhoto.naturalWidth > 0) portrait.classList.add("has-image");
   });
-
-  if (missingPhoto) {
-    document.querySelector("#image-note").textContent = "A character wiki has no portrait for this pairing; an illustrated avatar is shown instead.";
-  } else {
-    document.querySelector("#image-note").textContent = "Real character pictures from their story wikis are in the scene. The Showdown and Hangout buttons change the setting.";
-  }
 }
 
 function setStory() {
